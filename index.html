@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Список покупок — 3 дня × 2</title>
+<style>
+body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;margin:0;padding:12px;background:#faf7f2;color:#2b2620;max-width:640px;margin:auto}
+h1{font-size:20px;margin:6px 0 2px}
+.sub{color:#7a7166;font-size:13px;margin-bottom:10px}
+.bar{position:sticky;top:0;background:#faf7f2;padding:6px 0;display:flex;gap:8px;align-items:center;z-index:2}
+.prog{flex:1;height:8px;background:#e8dfd2;border-radius:4px;overflow:hidden}
+.prog i{display:block;height:100%;background:#4caf50;width:0}
+button{border:0;background:#e8dfd2;border-radius:8px;padding:6px 10px;font-size:13px}
+h2{font-size:15px;margin:16px 0 6px;color:#8a5a2b}
+label{display:flex;gap:10px;align-items:flex-start;background:#fff;border-radius:10px;padding:10px;margin:6px 0;box-shadow:0 1px 2px #0001}
+input{width:22px;height:22px;flex:none;margin:0;accent-color:#4caf50}
+.n{font-weight:600}.q{color:#7a7166;font-weight:400}
+.alt{display:block;font-size:12.5px;color:#b0602a;margin-top:3px}
+label.done{opacity:.45}label.done .n{text-decoration:line-through}
+</style>
+</head>
+<body>
+<h1>🛒 Список покупок</h1>
+<div class="sub">3 дня × 2 порции · обеды 3, 4, 11 · перекусы 2, 4, 12 · ужины 3, 13, 18 · магазин: Villa / Tops / Lotus's</div>
+<div class="bar"><div class="prog"><i id="p"></i></div><span id="c"></span><button onclick="reset()">Сброс</button></div>
+<div id="list"></div>
+<script>
+const D=[
+["Мясо и рыба",[
+["Куриная грудка","720 г"],
+["Фарш куриный (грудка)","280 г","нет → попросить прокрутить грудку или обычный куриный фарш"],
+["Куриное бедро","280 г"],
+["Ветчина","80 г"],
+["Тунец в собственном соку","2 маленькие банки"]]],
+["Молочное и яйца",[
+["Греческий йогурт","700 г"],
+["Творог","200 г","нет → Cottage cheese (Villa/Tops), рикотта"],
+["Лёгкая моцарелла","90 г","нет → обычная моцарелла, на ⅓ меньше"],
+["Яйца","10 шт"]]],
+["Овощи и зелень",[
+["Шампиньоны","400–450 г","нет → вешенки"],
+["Морковь, болгарский перец, лук","~700 г вместе"],
+["Помидоры","3–4 шт"],
+["Салат листовой"],
+["Огурцы","2 шт"],
+["Чеснок"],
+["Зелень"]]],
+["Фрукты",[
+["Манго","1 шт"],
+["Яблоки","2 шт"]]],
+["Крупы, хлеб, лепёшки",[
+["Рис басмати / жасмин","120 г"],
+["Паста мелкая","130 г"],
+["Лаваш тонкий","300 г (~2 уп.)","нет → Lebanese bread / pita (Villa) или большие тортильи"],
+["Тортилья пшеничная","2 шт"],
+["Хлеб цельнозерновой","6 ломтиков"]]],
+["Консервы",[
+["Кукуруза","1 маленькая банка"],
+["Томаты перетёртые","150 г","нет → Passata / Crushed tomatoes (Mutti, Cirio)"],
+["Фасоль красная","1 маленькая банка","Heinz Red Kidney Beans"]]],
+["Соусы, специи, прочее (если нет дома)",[
+["Соевый соус"],
+["Терияки без сахара","","нет → соевый соус + чеснок + имбирь"],
+["Корица"],["Кунжут"],["Паприка"],["Зира (cumin)"],
+["Масло","~25 г"],
+["Орехи","10 г"]]]
+];
+const K="shop-3d2p",S=JSON.parse(localStorage.getItem(K)||"{}");
+const L=document.getElementById("list");let t=0;
+D.forEach(([g,it])=>{const h=document.createElement("h2");h.textContent=g;L.append(h);
+it.forEach(([n,q,a])=>{t++;const id=n,l=document.createElement("label");
+l.innerHTML=`<input type="checkbox"><span><span class="n">${n}</span> <span class="q">${q?"— "+q:""}</span>${a?`<span class="alt">↪ ${a}</span>`:""}</span>`;
+const c=l.querySelector("input");c.checked=!!S[id];l.classList.toggle("done",c.checked);
+c.onchange=()=>{S[id]=c.checked;localStorage.setItem(K,JSON.stringify(S));l.classList.toggle("done",c.checked);upd()};L.append(l)})});
+function upd(){const d=Object.values(S).filter(Boolean).length;document.getElementById("c").textContent=d+"/"+t;document.getElementById("p").style.width=(100*d/t)+"%"}
+function reset(){if(confirm("Снять все галочки?")){localStorage.removeItem(K);location.reload()}}
+upd();
+</script>
+</body>
+</html>
